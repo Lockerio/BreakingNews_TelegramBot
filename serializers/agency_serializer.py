@@ -1,4 +1,4 @@
-from DB.models import NewsAgency
+from models import NewsAgency
 
 
 class AgencySerializer:

@@ -1,4 +1,4 @@
-from DB.serializers.favorites_serializer import FavoritesSerializer
+from serializers.favorites_serializer import FavoritesSerializer
 
 
 class FavoritesService:

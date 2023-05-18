@@ -1,4 +1,4 @@
-from DB.models import Favorites
+from models import Favorites
 
 
 class FavoritesSerializer:

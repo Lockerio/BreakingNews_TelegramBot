@@ -1,4 +1,4 @@
-from DB.models import User
+from models import User
 
 
 class UserSerializer:
@@ -7,6 +7,9 @@ class UserSerializer:
 
     def get_one(self, user_id):
         return self.session.query(User).get(user_id)
+
+    def get_one_by_telegram_id(self, telegram_id):
+        return self.session.query(User).filter_by(telegram_id=telegram_id).first()
 
     def get_all(self):
         return self.session.query(User).all()

@@ -1,4 +1,4 @@
-from DB.serializers.agency_serializer import AgencySerializer
+from serializers.agency_serializer import AgencySerializer
 
 
 class NewsService:

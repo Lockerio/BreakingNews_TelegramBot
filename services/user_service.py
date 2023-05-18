@@ -1,4 +1,4 @@
-from DB.serializers.user_serializer import UserSerializer
+from serializers.user_serializer import UserSerializer
 
 
 class UserService:
@@ -7,6 +7,9 @@ class UserService:
 
     def get_one(self, user_id):
         return self.serializer.get_one(user_id)
+
+    def get_one_by_telegram_id(self, telegram_id):
+        return self.serializer.get_one_by_telegram_id(telegram_id)
 
     def get_all(self):
         return self.serializer.get_all()

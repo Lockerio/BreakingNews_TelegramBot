@@ -161,3 +161,4 @@ cython_debug/
 #.idea/
 
 *.drawio.bkp
+config.py

@@ -1,4 +1,4 @@
-from DB.models import News
+from models import News
 
 
 class NewsSerializer:

@@ -1,4 +1,4 @@
-from DB.serializers.news_serializer import NewsSerializer
+from serializers.news_serializer import NewsSerializer
 
 
 class NewsService:
