@@ -1,6 +1,6 @@
 import json
 
-from container import userService, actionService
+from container import userService, actionService, expectedMoveService
 
 
 class RequestHelper:
@@ -11,6 +11,7 @@ class RequestHelper:
                 "telegram_id": telegram_id
             }
             user = userService.create(user_mapping)
+            a = expectedMoveService.create({"user_id": user.id})
             return user.id
         return user_id
 
@@ -30,3 +31,25 @@ class RequestHelper:
             "user_id": user_id
         }
         actionService.create(action_mapping)
+
+    @staticmethod
+    def assert_save_n(user_id, n):
+        action_mapping = {
+            "user_id": user_id,
+            "news_amount_to_show": n
+        }
+        try:
+            userService.update_news_amount_to_show(action_mapping)
+
+        except ValueError as e:
+            error_message = str(e)
+            return False, error_message
+
+        except Exception as e:
+            error_message = str(e)
+            return False, error_message
+
+
+
+        message = f"Количество новостей для показа изменено на <b>{n}</b>"
+        return True, message

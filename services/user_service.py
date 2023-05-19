@@ -18,13 +18,17 @@ class UserService:
         return self.serializer.create(data)
 
     def update_news_amount_to_show(self, data):
-        user_id = data.get("id")
+        user_id = data.get("user_id")
         user = self.get_one(user_id)
 
-        n = data.get("news_amount_to_show")
+        try:
+            n = int(data.get("news_amount_to_show"))
 
-        if not (0 < n < 10):
-            raise ValueError("Ошибка! Вы можете получать от 0 до 10 постов за раз")
+        except Exception:
+            raise Exception("Ошибка! Вы отправляете не число🤕")
+
+        if not (0 < n < 11):
+            raise ValueError("Ошибка! Вы можете получать от 1 до 10 постов за раз.")
 
         user.news_amount_to_show = n
         return self.serializer.update_news_amount_to_show(user)

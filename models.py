@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Table, Text, ForeignKey, JSON
+from sqlalchemy import Column, Integer, Table, Text, ForeignKey, JSON, BOOLEAN
 
 
 from sqlalchemy.orm import declarative_base, relationship
@@ -31,6 +31,7 @@ class User(Base):
     news_amount_to_show = Column(Integer(), default=5)
     news_agencies = relationship("NewsAgency", secondary=Favorites, backref="users")
     actions = relationship("Action", backref="users")
+    expected_moves = relationship("ExpectedMove", backref="users")
 
     def __repr__(self):
         return f'{self.telegram_id}'
@@ -44,6 +45,17 @@ class Action(Base):
 
     def __repr__(self):
         return f'{self.json_description}'
+
+
+class ExpectedMove(Base):
+    __tablename__ = 'ExpectedMove'
+    id = Column(Integer(), primary_key=True)
+    is_waiting_n = Column(BOOLEAN(), default=False)
+    user_id = Column(Integer(), ForeignKey('Users.id'))
+
+    def __repr__(self):
+        return f'{self.is_waiting_n}'
+
 
 
 class News(Base):

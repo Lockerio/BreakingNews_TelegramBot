@@ -1,16 +1,12 @@
-import json
 import telebot
-from sqlalchemy.orm import Session
 
-# from DB.container import userService
-from database import engine
-from serializers.user_serializer import UserSerializer
-from services.user_service import UserService
 from config import BOT_TOKEN
+from utils.answers_helper import AnswerHelper
 from utils.request_helper import RequestHelper
 
 bot = telebot.TeleBot(BOT_TOKEN)
 requestHelper = RequestHelper()
+answerHelper = AnswerHelper()
 
 
 @bot.message_handler(commands=["start"])
@@ -24,15 +20,40 @@ def start(message):
     requestHelper.record_user_actions(user_id, action)
 
 
-@bot.message_handler(content_types=["text"])
-def start(message):
-    chat_id = message.chat.id
-    bot.send_message(chat_id, "К сожалению, мой разработчик не научил меня разговаривать с людьми😢")
-    bot.send_message(chat_id, "Я лишь могу отправлять Вам новости")
+@bot.message_handler(commands=["update_n"])
+def update_n(message):
+    bot.send_message(message.chat.id, "Введите желаемое количество новостей для показа за один раз:", parse_mode="html")
 
     user_id = requestHelper.get_user_id(message.from_user.id)
     action = message.json
     requestHelper.record_user_actions(user_id, action)
+
+    answerHelper.update_user_waiting_n(user_id, True)
+
+
+@bot.message_handler(content_types=["text"])
+def text(message):
+    chat_id = message.chat.id
+    user_id = requestHelper.get_user_id(message.from_user.id)
+
+    if answerHelper.is_user_waiting_n(user_id):
+
+        answer = requestHelper.assert_save_n(user_id, message.text)
+        if answer[0]:
+            answerHelper.update_user_waiting_n(user_id, False)
+
+        bot.send_message(chat_id, answer[1], parse_mode="html")
+
+    else:
+        bot.send_message(chat_id, "К сожалению, мой разработчик не научил меня разговаривать с людьми😢")
+        bot.send_message(chat_id, "Я лишь могу отправлять Вам новости")
+
+
+    action = message.json
+    requestHelper.record_user_actions(user_id, action)
+
+
+
 
 
 
