@@ -163,3 +163,4 @@ cython_debug/
 *.drawio.bkp
 config.py
 *.db
+*.html

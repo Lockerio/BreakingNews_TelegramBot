@@ -18,6 +18,7 @@ class NewsAgency(Base):
     id = Column(Integer(), primary_key=True)
     name = Column(Text())
     description = Column(Text())
+    beauty_url = Column(Text())
     news = relationship("News", back_populates="news_agency")
 
     def __repr__(self):
@@ -55,7 +56,6 @@ class ExpectedMove(Base):
 
     def __repr__(self):
         return f'{self.is_waiting_n}'
-
 
 
 class News(Base):

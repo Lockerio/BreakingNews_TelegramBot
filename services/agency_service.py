@@ -1,7 +1,7 @@
 from serializers.agency_serializer import AgencySerializer
 
 
-class NewsService:
+class AgencyService:
     def __init__(self, serializer: AgencySerializer):
         self.serializer = serializer
 
@@ -18,6 +18,7 @@ class NewsService:
         agency_id = data.get("id")
         agency = self.get_one(agency_id)
         agency.name = data.get("title")
+        agency.beauty_url = data.get("beauty_url")
         agency.description = data.get("description")
         return self.serializer.update(agency)
 
