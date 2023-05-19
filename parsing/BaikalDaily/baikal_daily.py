@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from config import HEADERS
+from container import newsService
 
 
 class BaikalDailyParser:
@@ -16,8 +17,8 @@ class BaikalDailyParser:
         with open("index.html", "w") as file:
             file.write(src)
 
-    def find_news(self):
-        with open("index.html", "r") as file:
+    def find_news(self, file):
+        with open(file, "r") as file:
             src = file.read()
 
         soup = BeautifulSoup(src, "lxml")
@@ -30,7 +31,8 @@ class BaikalDailyParser:
                 news_data = {
                     "title": item.text.strip(),
                     "text": news.find("div", {"class": "news-preview-text"}).text.strip(),
-                    "url": self.url + item.get("href")
+                    "url": self.url + item.get("href"),
+                    "news_agency_id": 1
                 }
                 to_save.append(news_data)
             news = news.find_next_sibling()
@@ -38,12 +40,11 @@ class BaikalDailyParser:
 
     @staticmethod
     def save_news_to_db(news):
-        pass
+        for item in news:
+            newsService.create(item)
 
 
 if __name__ == '__main__':
-    baikalDailyParser = BaikalDailyParser()
+    # baikalDailyParser = BaikalDailyParser()
     # baikalDailyParser.save_index_html_to_file()
-
-    news = baikalDailyParser.find_news()
-
+    pass
