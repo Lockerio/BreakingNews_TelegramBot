@@ -1,10 +1,10 @@
 from bs4 import BeautifulSoup
 
 from parsing.parser_parent import ParserParent
-from parsing.meta import BAIKAL_DAILY_URL, BAIKAL_DAILY_ID
+from parsing.meta import IRK_RU_URL, IRK_RU_ID
 
 
-class BaikalDailyParser(ParserParent):
+class IrkRuParser(ParserParent):
     def __init__(self, url):
         super().__init__(url)
 
@@ -13,23 +13,24 @@ class BaikalDailyParser(ParserParent):
             src = file.read()
 
         soup = BeautifulSoup(src, "lxml")
-        news = soup.find("div", {"id": "front_news_main_center"}).find("div", {"class": "news-item"})
+        news = soup.find("li", {"class": "b-news-article-list-item"})
         to_save = []
 
         while news:
-            item = news.find("a")
+            item = news.find("h2")
             if item:
                 news_data = {
                     "title": item.text.strip(),
-                    "text": news.find("div", {"class": "news-preview-text"}).text.strip(),
-                    "url": self.url + item.get("href"),
-                    "news_agency_id": BAIKAL_DAILY_ID
+                    "text": news.find("p").text.strip(),
+                    "url": self.url + news.find("a").get("href"),
+                    "news_agency_id": IRK_RU_ID
                 }
                 to_save.append(news_data)
             news = news.find_next_sibling()
+
         return to_save
 
 
 if __name__ == '__main__':
-    baikalDailyParser = BaikalDailyParser(BAIKAL_DAILY_URL)
-    baikalDailyParser.save_index_html_to_file()
+    irkRuParser = IrkRuParser(IRK_RU_URL)
+    irkRuParser.save_index_html_to_file()

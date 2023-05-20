@@ -2,7 +2,7 @@ import os
 
 from container import agencyService
 from parsing.BaikalDaily.baikal_daily import BaikalDailyParser
-from parsing.urls import BAIKAL_DAILY_URL
+from parsing.meta import BAIKAL_DAILY_URL
 
 
 def fill_db():
@@ -18,9 +18,9 @@ def fill_db():
             "beauty_url": "irk.ru"
         },
         {
-            "name": "Norilsk city",
-            "description": "ОФИЦИАЛЬНЫЙ САЙТ ГОРОДА НОРИЛЬСКА.",
-            "beauty_url": "norilsk-city.ru"
+            "name": "City-n",
+            "description": "Новости Кемеровской области.",
+            "beauty_url": "city-n.ru"
         },
     ]
 
