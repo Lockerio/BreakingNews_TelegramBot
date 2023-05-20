@@ -20,9 +20,13 @@ class ParserParent:
         pass
 
     @staticmethod
-    def save_news_to_db(news):
+    def assert_save_news_to_db(news):
+        is_there_newest_news = False
         for item in news:
-            newsService.create(item)
+            if newsService.assert_news_create(item):
+                is_there_newest_news = True
+
+        return is_there_newest_news
 
 
 if __name__ == '__main__':

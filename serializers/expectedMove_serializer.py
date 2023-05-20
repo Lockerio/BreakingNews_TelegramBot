@@ -15,7 +15,6 @@ class ExpectedMoveSerializer:
         return self.session.query(ExpectedMove).all()
 
     def create(self, data):
-        print(data)
         expected_move = ExpectedMove(**data)
         self.session.add(expected_move)
         self.session.commit()

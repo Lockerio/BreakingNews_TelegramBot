@@ -1,12 +1,30 @@
 import telebot
+import threading
 
 from config import BOT_TOKEN
 from utils.answers_helper import AnswerHelper
 from utils.request_helper import RequestHelper
 
-bot = telebot.TeleBot(BOT_TOKEN)
+
 requestHelper = RequestHelper()
 answerHelper = AnswerHelper()
+
+bot = telebot.TeleBot(BOT_TOKEN)
+
+
+def background_task():
+    is_there_newest_news = RequestHelper.background_request()
+
+
+
+
+
+
+
+
+# background_thread = threading.Thread(target=background_task)
+# background_thread.daemon = True
+# background_thread.start()
 
 
 @bot.message_handler(commands=["start"])
@@ -14,7 +32,7 @@ def start(message):
     bot.send_message(message.chat.id, "<b>Привет</b>", parse_mode="html")
 
     telegram_id = message.from_user.id
-    user_id = requestHelper.create_user(telegram_id)
+    user_id = requestHelper.create_user(telegram_id, message.chat.id)
 
     action = message.json
     requestHelper.record_user_actions(user_id, action)
@@ -48,13 +66,8 @@ def text(message):
         bot.send_message(chat_id, "К сожалению, мой разработчик не научил меня разговаривать с людьми😢")
         bot.send_message(chat_id, "Я лишь могу отправлять Вам новости")
 
-
     action = message.json
     requestHelper.record_user_actions(user_id, action)
-
-
-
-
 
 
 bot.polling(none_stop=True)

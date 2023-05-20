@@ -14,10 +14,10 @@ class NewsService:
     def get_all(self):
         return self.serializer.get_all()
 
-    def create(self, data):
+    def assert_news_create(self, data):
         if self.get_one_by_title(data["title"]):
-            return
-        return self.serializer.create(data)
+            return False
+        return True
 
     def update(self, data):
         news_id = data.get("id")

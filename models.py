@@ -29,6 +29,7 @@ class User(Base):
     __tablename__ = 'Users'
     id = Column(Integer(), primary_key=True)
     telegram_id = Column(Integer())
+    chat_id = Column(Integer())
     news_amount_to_show = Column(Integer(), default=5)
     news_agencies = relationship("NewsAgency", secondary=Favorites, backref="users")
     actions = relationship("Action", backref="users")

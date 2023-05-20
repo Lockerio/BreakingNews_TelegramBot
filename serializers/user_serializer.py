@@ -20,7 +20,7 @@ class UserSerializer:
         self.session.commit()
         return user
 
-    def update_news_amount_to_show(self, user):
+    def update(self, user):
         self.session.add(user)
         self.session.commit()
         return user

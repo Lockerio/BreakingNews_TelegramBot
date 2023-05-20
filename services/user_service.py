@@ -17,7 +17,7 @@ class UserService:
     def create(self, data):
         return self.serializer.create(data)
 
-    def update_news_amount_to_show(self, data):
+    def update(self, data):
         user_id = data.get("user_id")
         user = self.get_one(user_id)
 
@@ -31,7 +31,7 @@ class UserService:
             raise ValueError("Ошибка! Вы можете получать от 1 до 10 постов за раз.")
 
         user.news_amount_to_show = n
-        return self.serializer.update_news_amount_to_show(user)
+        return self.serializer.update(user)
 
     def delete(self, user_id):
         self.serializer.delete(user_id)
