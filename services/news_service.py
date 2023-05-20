@@ -8,10 +8,15 @@ class NewsService:
     def get_one(self, news_id):
         return self.serializer.get_one(news_id)
 
+    def get_one_by_title(self, title):
+        return self.serializer.get_one_by_title(title)
+
     def get_all(self):
         return self.serializer.get_all()
 
     def create(self, data):
+        if self.get_one_by_title(data["title"]):
+            return
         return self.serializer.create(data)
 
     def update(self, data):

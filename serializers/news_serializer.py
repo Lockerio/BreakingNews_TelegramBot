@@ -8,6 +8,9 @@ class NewsSerializer:
     def get_one(self, news_id):
         return self.session.query(News).get(news_id)
 
+    def get_one_by_title(self, title):
+        return self.session.query(News).filter_by(title=title).first()
+
     def get_all(self):
         return self.session.query(News).all()
 

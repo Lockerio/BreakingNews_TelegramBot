@@ -1,21 +1,12 @@
-import requests
 from bs4 import BeautifulSoup
 
-from config import HEADERS
-from container import newsService
+from parsing.parser_parent import ParserParent
+from parsing.urls import BAIKAL_DAILY_URL
 
 
-class BaikalDailyParser:
-    def __init__(self):
-        self.url = "https://www.baikal-daily.ru"
-        self.headers = HEADERS
-
-    def save_index_html_to_file(self):
-        req = requests.get(self.url, headers=self.headers)
-        src = req.text
-
-        with open("index.html", "w") as file:
-            file.write(src)
+class BaikalDailyParser(ParserParent):
+    def __init__(self, url):
+        super().__init__(url)
 
     def find_news(self, file):
         with open(file, "r") as file:
@@ -38,13 +29,7 @@ class BaikalDailyParser:
             news = news.find_next_sibling()
         return to_save
 
-    @staticmethod
-    def save_news_to_db(news):
-        for item in news:
-            newsService.create(item)
-
 
 if __name__ == '__main__':
-    # baikalDailyParser = BaikalDailyParser()
-    # baikalDailyParser.save_index_html_to_file()
-    pass
+    baikalDailyParser = BaikalDailyParser(BAIKAL_DAILY_URL)
+    baikalDailyParser.save_index_html_to_file()
