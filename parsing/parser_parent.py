@@ -13,8 +13,8 @@ class ParserParent:
         req = requests.get(self.url, headers=self.headers)
         src = req.text
 
-        with open("index.html", "w") as file:
-            file.write(src)
+        with open("index.html", "wb") as file:
+            file.write(src.encode("utf-8"))
 
     def find_news(self, file):
         pass

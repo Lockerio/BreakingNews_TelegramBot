@@ -11,12 +11,16 @@ class NewsService:
     def get_one_by_title(self, title):
         return self.serializer.get_one_by_title(title)
 
+    def get_newest_agency_news(self):
+        return self.get_newest_agency_news()
+
     def get_all(self):
         return self.serializer.get_all()
 
     def assert_news_create(self, data):
         if self.get_one_by_title(data["title"]):
             return False
+        self.serializer.create(data)
         return True
 
     def update(self, data):

@@ -4,7 +4,7 @@ from container import agencyService
 from parsing.BaikalDaily.baikal_daily import BaikalDailyParser
 from parsing.CityN.city_n import CityNParser
 from parsing.IrkRu.irk_ru import IrkRuParser
-from parsing.meta import BAIKAL_DAILY_URL, IRK_RU_URL, CITY_N_URL
+from parsing.meta import BAIKAL_DAILY_URL, IRK_RU_URL, CITY_N_URL, BAIKAL_DAILY_ID, IRK_RU_ID, CITY_N_ID
 
 
 def fill_db_agencies():
@@ -40,7 +40,7 @@ def fill_db_news():
 
     baikalDailyParser = BaikalDailyParser(BAIKAL_DAILY_URL)
     news = baikalDailyParser.find_news(baikal_daily_file_path)
-    is_there_newest_news['BaikalDaily'] = baikalDailyParser.assert_save_news_to_db(news)
+    is_there_newest_news[BAIKAL_DAILY_ID] = baikalDailyParser.assert_save_news_to_db(news)
 
     # IrkRu
     irk_ru_folder_path = os.path.join(current_dir, 'parsing', 'IrkRu')
@@ -48,7 +48,7 @@ def fill_db_news():
 
     irkRuParser = IrkRuParser(IRK_RU_URL)
     news = irkRuParser.find_news(irk_ru_file_path)
-    is_there_newest_news['IrkRu'] = irkRuParser.assert_save_news_to_db(news)
+    is_there_newest_news[IRK_RU_ID] = irkRuParser.assert_save_news_to_db(news)
 
     # CityN
     city_n_folder_path = os.path.join(current_dir, 'parsing', 'CityN')
@@ -56,7 +56,7 @@ def fill_db_news():
 
     cityNParser = CityNParser(CITY_N_URL)
     news = cityNParser.find_news(city_n_file_path)
-    is_there_newest_news['CityN'] = cityNParser.assert_save_news_to_db(news)
+    is_there_newest_news[CITY_N_ID] = cityNParser.assert_save_news_to_db(news)
 
     return is_there_newest_news
 

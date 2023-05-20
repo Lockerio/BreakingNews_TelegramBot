@@ -1,7 +1,10 @@
+from time import sleep
+
 import telebot
 import threading
 
 from config import BOT_TOKEN
+from parsing.meta import BAIKAL_DAILY_ID, IRK_RU_ID, CITY_N_ID
 from utils.answers_helper import AnswerHelper
 from utils.request_helper import RequestHelper
 
@@ -13,20 +16,32 @@ bot = telebot.TeleBot(BOT_TOKEN)
 
 
 def background_task():
-    is_there_newest_news = RequestHelper.background_request()
+    while True:
+        is_there_newest_news = RequestHelper.background_request()
 
-    all_chat_ids = requestHelper.get_sorted_chat_ids_with_sources_agency_id()
+        all_chat_ids = requestHelper.get_sorted_chat_ids_with_sources_agency_id()
+
+        if is_there_newest_news[BAIKAL_DAILY_ID]:
+            news = requestHelper.get_news(BAIKAL_DAILY_ID)
+            for chat in all_chat_ids[BAIKAL_DAILY_ID]:
+                bot.send_message(chat, news, parse_mode="html")
+
+        if is_there_newest_news[IRK_RU_ID]:
+            news = requestHelper.get_news(IRK_RU_ID)
+            for chat in all_chat_ids[IRK_RU_ID]:
+                bot.send_message(chat, news, parse_mode="html")
+
+        if is_there_newest_news[CITY_N_ID]:
+            news = requestHelper.get_news(CITY_N_ID)
+            for chat in all_chat_ids[CITY_N_ID]:
+                bot.send_message(chat, news, parse_mode="html")
+
+        sleep(3600)
 
 
-
-
-
-
-
-
-# background_thread = threading.Thread(target=background_task)
-# background_thread.daemon = True
-# background_thread.start()
+background_thread = threading.Thread(target=background_task)
+background_thread.daemon = True
+background_thread.start()
 
 
 @bot.message_handler(commands=["start"])

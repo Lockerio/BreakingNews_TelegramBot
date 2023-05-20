@@ -8,6 +8,9 @@ class AgencySerializer:
     def get_one(self, agency_id):
         return self.session.query(NewsAgency).get(agency_id)
 
+    def get_one_by_name(self, name):
+        return self.session.query(NewsAgency).filter_by(name=name).first()
+
     def get_all(self):
         return self.session.query(NewsAgency).all()
 

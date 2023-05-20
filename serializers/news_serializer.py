@@ -1,4 +1,5 @@
 from models import News
+from sqlalchemy import desc
 
 
 class NewsSerializer:
@@ -10,6 +11,12 @@ class NewsSerializer:
 
     def get_one_by_title(self, title):
         return self.session.query(News).filter_by(title=title).first()
+
+    def get_newest_agency_news(self, agency_id):
+        latest_news = self.session.query(News).filter_by(news_agency_id=agency_id).order_by(
+            desc(News.id)).first()
+
+        return latest_news
 
     def get_all(self):
         return self.session.query(News).all()

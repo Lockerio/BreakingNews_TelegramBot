@@ -9,8 +9,9 @@ class IrkRuParser(ParserParent):
         super().__init__(url)
 
     def find_news(self, file):
-        with open(file, "r") as file:
-            src = file.read()
+        with open(file, "rb") as file:
+            data = file.read()
+            src = data.decode("utf-8")
 
         soup = BeautifulSoup(src, "lxml")
         news = soup.find("li", {"class": "b-news-article-list-item"})
@@ -22,7 +23,7 @@ class IrkRuParser(ParserParent):
                 news_data = {
                     "title": item.text.strip(),
                     "text": news.find("p").text.strip(),
-                    "url": self.url + news.find("a").get("href"),
+                    "url": self.url + news.find("a").get("href")[6:],  # Cut the '/news/'
                     "news_agency_id": IRK_RU_ID
                 }
                 to_save.append(news_data)
@@ -32,5 +33,8 @@ class IrkRuParser(ParserParent):
 
 
 if __name__ == '__main__':
-    irkRuParser = IrkRuParser(IRK_RU_URL)
-    irkRuParser.save_index_html_to_file()
+    # irkRuParser = IrkRuParser(IRK_RU_URL)
+    # irkRuParser.save_index_html_to_file()
+    #
+    # print(irkRuParser.find_news("index.html"))
+    pass

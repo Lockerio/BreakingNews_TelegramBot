@@ -1,11 +1,11 @@
 import json
 
-from container import userService, actionService, expectedMoveService
+from container import userService, actionService, expectedMoveService, newsService
 from fill_db import fill_db_news
 from parsing.BaikalDaily.baikal_daily import BaikalDailyParser
 from parsing.CityN.city_n import CityNParser
 from parsing.IrkRu.irk_ru import IrkRuParser
-from parsing.meta import IRK_RU_URL, BAIKAL_DAILY_URL, CITY_N_URL, AGENCIES_IDS
+from parsing.meta import BAIKAL_DAILY_URL, CITY_N_URL, AGENCIES_IDS, IRK_RU_URL
 
 
 class RequestHelper:
@@ -62,25 +62,28 @@ class RequestHelper:
 
     @staticmethod
     def background_request():
-        while True:
-            # Filling db with the newest news
-            baikalDailyParser = BaikalDailyParser(BAIKAL_DAILY_URL)
-            baikalDailyParser.save_index_html_to_file()
+        baikalDailyParser = BaikalDailyParser(BAIKAL_DAILY_URL)
+        baikalDailyParser.save_index_html_to_file()
 
-            irkRuParser = IrkRuParser(IRK_RU_URL)
-            irkRuParser.save_index_html_to_file()
+        irkRuParser = IrkRuParser(IRK_RU_URL)
+        irkRuParser.save_index_html_to_file()
 
-            cityNParser = CityNParser(CITY_N_URL)
-            cityNParser.save_index_html_to_file()
+        cityNParser = CityNParser(CITY_N_URL)
+        cityNParser.save_index_html_to_file()
 
-            is_there_newest_news = fill_db_news()
+        is_there_newest_news = fill_db_news()
+        print(is_there_newest_news)
 
-            return is_there_newest_news
+        return is_there_newest_news
 
     @staticmethod
     def get_sorted_chat_ids_with_sources_agency_id():
         all_chat_ids = {}
         for agency_id in AGENCIES_IDS:
-            chat_ids = userService.get_chat_ids_from_user_with_definite_source_agency()
+            chat_ids = userService.get_chat_ids_from_user_with_definite_source_agency(agency_id)
             all_chat_ids[agency_id] = chat_ids
         return all_chat_ids
+
+    @staticmethod
+    def get_news(agency_id):
+        return newsService.get_newest_agency_news(agency_id)
