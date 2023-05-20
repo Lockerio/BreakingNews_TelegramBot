@@ -26,16 +26,22 @@ class UserService:
         user_id = data.get("user_id")
         user = self.get_one(user_id)
 
-        try:
-            n = int(data.get("news_amount_to_show"))
+        new_n = data.get("news_amount_to_show")
+        if new_n:
+            try:
+                n = int(new_n)
 
-        except Exception:
-            raise Exception("Ошибка! Вы отправляете не число🤕")
+            except Exception:
+                raise Exception("Ошибка! Вы отправляете не число🤕")
 
-        if not (0 < n < 11):
-            raise ValueError("Ошибка! Вы можете получать от 1 до 10 постов за раз.")
+            if not (0 < n < 11):
+                raise ValueError("Ошибка! Вы можете получать от 1 до 10 постов за раз.")
+            user.news_amount_to_show = n
 
-        user.news_amount_to_show = n
+        new_source_id = data.get("source_agency_id")
+        if new_source_id:
+            user.source_agency_id = new_source_id
+
         return self.serializer.update(user)
 
     def delete(self, user_id):

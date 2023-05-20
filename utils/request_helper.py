@@ -1,6 +1,6 @@
 import json
 
-from container import userService, actionService, expectedMoveService, newsService
+from container import userService, actionService, expectedMoveService, newsService, agencyService
 from fill_db import fill_db_news
 from parsing.BaikalDaily.baikal_daily import BaikalDailyParser
 from parsing.CityN.city_n import CityNParser
@@ -55,10 +55,16 @@ class RequestHelper:
             error_message = str(e)
             return False, error_message
 
-
-
         message = f"Количество новостей для показа изменено на <b>{n}</b>"
         return True, message
+
+    def save_source(self, telegram_id, n):
+        user_id = self.get_user_id(telegram_id)
+        mapping = {
+            "user_id": user_id,
+            "source_agency_id": int(n)
+        }
+        userService.update(mapping)
 
     @staticmethod
     def background_request():
@@ -87,3 +93,7 @@ class RequestHelper:
     @staticmethod
     def get_news(agency_id):
         return newsService.get_newest_agency_news(agency_id)
+
+    @staticmethod
+    def get_agencies():
+        return agencyService.get_all()
