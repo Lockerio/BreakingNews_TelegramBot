@@ -15,6 +15,8 @@ bot = telebot.TeleBot(BOT_TOKEN)
 def background_task():
     is_there_newest_news = RequestHelper.background_request()
 
+    all_chat_ids = requestHelper.get_sorted_chat_ids_with_sources_agency_id()
+
 
 
 

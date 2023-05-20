@@ -19,6 +19,7 @@ class NewsAgency(Base):
     name = Column(Text())
     description = Column(Text())
     beauty_url = Column(Text())
+    source_agency = relationship("User", backref="news_agency")
     news = relationship("News", back_populates="news_agency")
 
     def __repr__(self):
@@ -33,6 +34,7 @@ class User(Base):
     news_amount_to_show = Column(Integer(), default=5)
     news_agencies = relationship("NewsAgency", secondary=Favorites, backref="users")
     actions = relationship("Action", backref="users")
+    source_agency_id = Column(Integer(), ForeignKey('NewsAgencies.id'))
     expected_moves = relationship("ExpectedMove", backref="users")
 
     def __repr__(self):

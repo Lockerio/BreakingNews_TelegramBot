@@ -27,7 +27,7 @@ def fill_db_agencies():
     ]
 
     for agency in agencies:
-        agencyService.assert_news_create(agency)
+        agencyService.create(agency)
 
 
 def fill_db_news():

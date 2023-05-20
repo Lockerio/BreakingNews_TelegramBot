@@ -14,6 +14,11 @@ class UserService:
     def get_all(self):
         return self.serializer.get_all()
 
+    def get_chat_ids_from_user_with_definite_source_agency(self, source_agency_id):
+        users = self.serializer.get_user_by_source_agency_id(source_agency_id)
+        chat_ids = [chat_id for (chat_id,) in users]
+        return chat_ids
+
     def create(self, data):
         return self.serializer.create(data)
 

@@ -5,8 +5,7 @@ from fill_db import fill_db_news
 from parsing.BaikalDaily.baikal_daily import BaikalDailyParser
 from parsing.CityN.city_n import CityNParser
 from parsing.IrkRu.irk_ru import IrkRuParser
-from parsing.meta import IRK_RU_URL, BAIKAL_DAILY_URL, CITY_N_URL
-
+from parsing.meta import IRK_RU_URL, BAIKAL_DAILY_URL, CITY_N_URL, AGENCIES_IDS
 
 
 class RequestHelper:
@@ -17,8 +16,8 @@ class RequestHelper:
                 "telegram_id": telegram_id,
                 "chat_id": chat_id
             }
-            user = userService.assert_news_create(user_mapping)
-            expectedMoveService.assert_news_create({"user_id": user.id})
+            user = userService.create(user_mapping)
+            expectedMoveService.create({"user_id": user.id})
             return user.id
         return user_id
 
@@ -37,7 +36,7 @@ class RequestHelper:
             "json_description": json_description,
             "user_id": user_id
         }
-        actionService.assert_news_create(action_mapping)
+        actionService.create(action_mapping)
 
     @staticmethod
     def assert_save_n(user_id, n):
@@ -77,3 +76,11 @@ class RequestHelper:
             is_there_newest_news = fill_db_news()
 
             return is_there_newest_news
+
+    @staticmethod
+    def get_sorted_chat_ids_with_sources_agency_id():
+        all_chat_ids = {}
+        for agency_id in AGENCIES_IDS:
+            chat_ids = userService.get_chat_ids_from_user_with_definite_source_agency()
+            all_chat_ids[agency_id] = chat_ids
+        return all_chat_ids
