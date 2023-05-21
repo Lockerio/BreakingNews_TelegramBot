@@ -116,3 +116,7 @@ class RequestHelper:
     @staticmethod
     def get_agencies():
         return agencyService.get_all()
+
+    @staticmethod
+    def get_agency(agency_id):
+        return agencyService.get_one(agency_id)

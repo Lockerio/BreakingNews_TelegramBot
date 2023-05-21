@@ -101,6 +101,13 @@ def get(message):
 
 @bot.message_handler(commands=["default"])
 def default(message):
+    user = requestHelper.get_user(message.from_user.id)
+    source_agency_id = user.source_agency_id
+
+    agency = requestHelper.get_agency(source_agency_id)
+    if agency:
+        bot.send_message(message.chat.id, f"Источник по умолчанию: {agency.name}", disable_web_page_preview=True)
+
     agencies = requestHelper.get_agencies()
     agency1 = agencies[0]
     agency2 = agencies[1]
@@ -120,32 +127,72 @@ def default(message):
     '''
 
     buttons = [
-        types.InlineKeyboardButton("1", callback_data=1),
-        types.InlineKeyboardButton("2", callback_data=2),
-        types.InlineKeyboardButton("3", callback_data=3)
+        types.InlineKeyboardButton("1", callback_data="default,1"),
+        types.InlineKeyboardButton("2", callback_data="default,2"),
+        types.InlineKeyboardButton("3", callback_data="default,3")
     ]
-
     markup = types.InlineKeyboardMarkup([buttons])
 
     bot.send_message(message.chat.id, mess, parse_mode="html", disable_web_page_preview=True,
                      reply_markup=markup)
 
+    action = message.json
+    requestHelper.record_user_actions(user.id, action)
+
+
+@bot.message_handler(commands=["subscribe"])
+def default(message):
     user = requestHelper.get_user(message.from_user.id)
+
+    agencies = requestHelper.get_agencies()
+    agency1 = agencies[0]
+    agency2 = agencies[1]
+    agency3 = agencies[2]
+
+    mess = f'''
+    От какого агентства вы хотите получать уведомления:
+
+1) <a href="{BAIKAL_DAILY_URL}">{agency1.name}</a> 
+{agency1.description}  
+
+2) <a href="{IRK_RU_URL}">{agency2.name}</a> 
+{agency2.description}  
+
+3) <a href="{CITY_N_URL}">{agency3.name}</a> 
+{agency3.description}
+    '''
+
+    buttons = [
+        types.InlineKeyboardButton("1", callback_data="subscribe,1"),
+        types.InlineKeyboardButton("2", callback_data="subscribe,2"),
+        types.InlineKeyboardButton("3", callback_data="subscribe,3")
+    ]
+    markup = types.InlineKeyboardMarkup([buttons])
+
+    bot.send_message(message.chat.id, mess, parse_mode="html", disable_web_page_preview=True,
+                     reply_markup=markup)
+
     action = message.json
     requestHelper.record_user_actions(user.id, action)
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def handle_button_click(call):
-    button_data = call.data
-    requestHelper.save_source(call.from_user.id, button_data)
-    bot.answer_callback_query(call.id)
-
+    button_data = call.data.split(",")
     user = requestHelper.get_user(call.from_user.id)
 
-    answerHelper.update_user_amount_of_read_news(user.id, 1)
+    sender, number = button_data[0], button_data[1]
 
-    bot.send_message(user.chat_id, "Источник по умолчанию установлен", parse_mode="html")
+    if sender == "default":
+        requestHelper.save_source(call.from_user.id, number)
+        bot.answer_callback_query(call.id)
+
+        answerHelper.update_user_amount_of_read_news(user.id, 1)
+
+        bot.send_message(user.chat_id, "Источник по умолчанию установлен")
+
+    elif sender == "subscribe":
+        pass
 
 
 @bot.message_handler(content_types=["text"])
