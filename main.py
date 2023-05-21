@@ -180,8 +180,9 @@ def default(message):
 def handle_button_click(call):
     button_data = call.data.split(",")
     user = requestHelper.get_user(call.from_user.id)
+    user_id = user.id
 
-    sender, number = button_data[0], button_data[1]
+    sender, number = button_data[0], int(button_data[1])
 
     if sender == "default":
         requestHelper.save_source(call.from_user.id, number)
@@ -192,7 +193,13 @@ def handle_button_click(call):
         bot.send_message(user.chat_id, "Источник по умолчанию установлен")
 
     elif sender == "subscribe":
-        pass
+        is_subscriber_already = requestHelper.assert_create_subscription(user_id, number)
+
+        if is_subscriber_already:
+            bot.send_message(user.chat_id, "Вы уже подписаны на это агенство")
+        else:
+            agency = requestHelper.get_agency(number)
+            bot.send_message(user.chat_id, f"Вы подписались на {agency.name}")
 
 
 @bot.message_handler(content_types=["text"])

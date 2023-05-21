@@ -8,6 +8,12 @@ class FavoritesSerializer:
     def get_one(self, favorites_id):
         return self.session.query(Favorites).get(favorites_id)
 
+    def get_one_by_user_and_agency(self, user_id, agency_id):
+        return self.session.query(Favorites).\
+            filter_by(user_id=user_id).\
+            filter_by(agency_id=agency_id).\
+            first()
+
     def get_all(self):
         return self.session.query(Favorites).all()
 

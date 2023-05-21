@@ -1,6 +1,6 @@
 import json
 
-from container import userService, actionService, expectedMoveService, newsService, agencyService
+from container import userService, actionService, expectedMoveService, newsService, agencyService, favoritesService
 from fill_db import fill_db_news
 from parsing.BaikalDaily.baikal_daily import BaikalDailyParser
 from parsing.CityN.city_n import CityNParser
@@ -120,3 +120,13 @@ class RequestHelper:
     @staticmethod
     def get_agency(agency_id):
         return agencyService.get_one(agency_id)
+
+    @staticmethod
+    def assert_create_subscription(user_id, agency_id):
+        mapping = {
+            "user_id": user_id,
+            "agency_id": agency_id
+        }
+        if favoritesService.create(mapping):
+            return False
+        return True
