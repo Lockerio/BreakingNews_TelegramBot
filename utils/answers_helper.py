@@ -13,3 +13,15 @@ class AnswerHelper:
             "is_waiting_n": is_waiting_n
         }
         expectedMoveService.update(mapping)
+
+    @staticmethod
+    def format_news(news):
+
+        message = f"""
+<b>{news.title}</b>
+    
+{news.text}
+    
+Читайте полностью: <a href="{news.url}">{news.news_agency.beauty_url}</a>
+        """
+        return message

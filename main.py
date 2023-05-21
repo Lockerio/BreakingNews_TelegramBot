@@ -15,7 +15,7 @@ answerHelper = AnswerHelper()
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
-#
+
 # def background_task():
 #     while True:
 #         is_there_newest_news = RequestHelper.background_request()
@@ -60,11 +60,26 @@ def start(message):
 def update_n(message):
     bot.send_message(message.chat.id, "Введите желаемое количество новостей для показа за один раз:", parse_mode="html")
 
-    user_id = requestHelper.get_user_id(message.from_user.id)
+    user_id = requestHelper.get_user(message.from_user.id).id
     action = message.json
     requestHelper.record_user_actions(user_id, action)
-
     answerHelper.update_user_waiting_n(user_id, True)
+
+
+@bot.message_handler(commands=["get"])
+def get(message):
+    user = requestHelper.get_user(message.from_user.id)
+    action = message.json
+    requestHelper.record_user_actions(user.id, action)
+
+    source_id = user.source_agency_id
+    amount_news_to_show = user.news_amount_to_show
+
+    for news in range(amount_news_to_show):
+        news = requestHelper.get_news(source_id)
+        formatted_news = answerHelper.format_news(news)
+        bot.send_message(message.chat.id, formatted_news,
+                         parse_mode="html", disable_web_page_preview=True)
 
 
 @bot.message_handler(commands=["from_source"])
@@ -98,10 +113,10 @@ def from_source(message):
     bot.send_message(message.chat.id, mess, parse_mode="html", disable_web_page_preview=True,
                      reply_markup=markup)
 
-    user_id = requestHelper.get_user_id(message.from_user.id)
+    user = requestHelper.get_user(message.from_user.id)
     action = message.json
-    requestHelper.record_user_actions(user_id, action)
-
+    print(user.id)
+    requestHelper.record_user_actions(user.id, action)
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -114,7 +129,9 @@ def handle_button_click(call):
 @bot.message_handler(content_types=["text"])
 def text(message):
     chat_id = message.chat.id
-    user_id = requestHelper.get_user_id(message.from_user.id)
+    user = requestHelper.get_user(message.from_user.id)
+
+    user_id = user.id
 
     if answerHelper.is_user_waiting_n(user_id):
         answer = requestHelper.assert_save_n(user_id, message.text)

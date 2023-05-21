@@ -10,7 +10,7 @@ from parsing.meta import BAIKAL_DAILY_URL, CITY_N_URL, AGENCIES_IDS, IRK_RU_URL
 
 class RequestHelper:
     def create_user(self, telegram_id: int, chat_id):
-        user_id = self.get_user_id(telegram_id)
+        user_id = self.get_user(telegram_id)
         if not user_id:
             user_mapping = {
                 "telegram_id": telegram_id,
@@ -22,10 +22,10 @@ class RequestHelper:
         return user_id
 
     @staticmethod
-    def get_user_id(telegram_id: int):
+    def get_user(telegram_id: int):
         user = userService.get_one_by_telegram_id(telegram_id)
         if user:
-            return user.id
+            return user
         return None
 
     @staticmethod
@@ -59,9 +59,9 @@ class RequestHelper:
         return True, message
 
     def save_source(self, telegram_id, n):
-        user_id = self.get_user_id(telegram_id)
+        user = self.get_user(telegram_id)
         mapping = {
-            "user_id": user_id,
+            "user_id": user.id,
             "source_agency_id": int(n)
         }
         userService.update(mapping)

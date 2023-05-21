@@ -11,8 +11,8 @@ class NewsService:
     def get_one_by_title(self, title):
         return self.serializer.get_one_by_title(title)
 
-    def get_newest_agency_news(self):
-        return self.get_newest_agency_news()
+    def get_newest_agency_news(self, agency_id):
+        return self.serializer.get_newest_agency_news(agency_id)
 
     def get_all(self):
         return self.serializer.get_all()
