@@ -68,14 +68,24 @@ class RequestHelper:
 
     @staticmethod
     def background_request():
-        baikalDailyParser = BaikalDailyParser(BAIKAL_DAILY_URL)
-        baikalDailyParser.save_index_html_to_file()
+        try:
+            baikalDailyParser = BaikalDailyParser(BAIKAL_DAILY_URL)
+            baikalDailyParser.save_index_html_to_file()
+        except Exception as e:
+            print(e)
 
-        irkRuParser = IrkRuParser(IRK_RU_URL)
-        irkRuParser.save_index_html_to_file()
+        try:
+            irkRuParser = IrkRuParser(IRK_RU_URL)
+            irkRuParser.save_index_html_to_file()
+        except Exception as e:
+            print(e)
 
-        cityNParser = CityNParser(CITY_N_URL)
-        cityNParser.save_index_html_to_file()
+        try:
+            cityNParser = CityNParser(CITY_N_URL)
+            cityNParser.save_index_html_to_file()
+        except Exception as e:
+            print(e)
+
 
         is_there_newest_news = fill_db_news()
         print(is_there_newest_news)
