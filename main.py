@@ -73,17 +73,23 @@ def get(message):
     requestHelper.record_user_actions(user.id, action)
 
     source_id = user.source_agency_id
-    amount_news_to_show = user.news_amount_to_show
 
-    for news in range(amount_news_to_show):
-        news = requestHelper.get_news(source_id)
-        formatted_news = answerHelper.format_news(news)
-        bot.send_message(message.chat.id, formatted_news,
-                         parse_mode="html", disable_web_page_preview=True)
+    if source_id:
+        amount_news_to_show = user.news_amount_to_show
+
+        for news in range(amount_news_to_show):
+            news = requestHelper.get_news(source_id)
+            formatted_news = answerHelper.format_news(news)
+            bot.send_message(message.chat.id, formatted_news,
+                             parse_mode="html", disable_web_page_preview=True)
+    else:
+        bot.send_message(message.chat.id, "Вы не задали источник новостей")
+        bot.send_message(message.chat.id,
+                         "Используйте '/from_source' для установки агентства по умолчанию😇")
 
 
-@bot.message_handler(commands=["from_source"])
-def from_source(message):
+@bot.message_handler(commands=["default"])
+def default(message):
     agencies = requestHelper.get_agencies()
     agency1 = agencies[0]
     agency2 = agencies[1]
@@ -115,7 +121,6 @@ def from_source(message):
 
     user = requestHelper.get_user(message.from_user.id)
     action = message.json
-    print(user.id)
     requestHelper.record_user_actions(user.id, action)
 
 
@@ -124,6 +129,9 @@ def handle_button_click(call):
     button_data = call.data
     requestHelper.save_source(call.from_user.id, button_data)
     bot.answer_callback_query(call.id)
+
+    user = requestHelper.get_user(call.from_user.id)
+    bot.send_message(user.chat_id, "Источник по умолчанию установлен", parse_mode="html")
 
 
 @bot.message_handler(content_types=["text"])

@@ -55,7 +55,7 @@ class ExpectedMove(Base):
     __tablename__ = 'ExpectedMove'
     id = Column(Integer(), primary_key=True)
     is_waiting_n = Column(BOOLEAN(), default=False)
-    amount_of_read_news = Column(Integer())
+    amount_of_read_news = Column(Integer(), default=1)
     user_id = Column(Integer(), ForeignKey('Users.id'))
 
     def __repr__(self):
