@@ -87,7 +87,7 @@ def get(message):
                 bot.send_message(message.chat.id, formatted_news,
                                  parse_mode="html", disable_web_page_preview=True)
             else:
-                answerHelper.update_user_amount_of_read_news(user.id, 0)
+                answerHelper.update_user_amount_of_read_news(user.id, 1)
                 bot.send_message(message.chat.id, "К сожалению, вы просмотрели все новости этого агентства")
                 bot.send_message(message.chat.id, "Вы можете выбрать новое '/from_source' или "
                                                   "подождать, пока они выпустят что-нибудь новенькое😇")
@@ -142,6 +142,9 @@ def handle_button_click(call):
     bot.answer_callback_query(call.id)
 
     user = requestHelper.get_user(call.from_user.id)
+
+    answerHelper.update_user_amount_of_read_news(user.id, 1)
+
     bot.send_message(user.chat_id, "Источник по умолчанию установлен", parse_mode="html")
 
 

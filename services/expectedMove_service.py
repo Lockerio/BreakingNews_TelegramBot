@@ -15,8 +15,8 @@ class ExpectedMoveService:
         return self.serializer.get_all()
 
     def update(self, data):
-        expected_move_id = data.get("user_id")
-        expected_move = self.get_one_by_user_id(expected_move_id)
+        user_id = data.get("user_id")
+        expected_move = self.get_one_by_user_id(user_id)
 
         is_waiting_n = data.get("is_waiting_n")
         if is_waiting_n:
