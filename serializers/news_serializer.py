@@ -15,8 +15,12 @@ class NewsSerializer:
     def get_newest_agency_news(self, agency_id):
         latest_news = self.session.query(News).filter_by(news_agency_id=agency_id).order_by(
             desc(News.id)).first()
-
         return latest_news
+
+    def get_special_news(self, agency_id, amount_of_read_news):
+        special_news = self.session.query(News).filter_by(news_agency_id=agency_id).order_by(
+            desc(News.id)).offset(amount_of_read_news).first()
+        return special_news
 
     def get_all(self):
         return self.session.query(News).all()

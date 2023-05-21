@@ -14,6 +14,9 @@ class NewsService:
     def get_newest_agency_news(self, agency_id):
         return self.serializer.get_newest_agency_news(agency_id)
 
+    def get_special_news(self, source_agency_id, amount_of_read_news):
+        return self.serializer.get_special_news(source_agency_id, amount_of_read_news)
+
     def get_all(self):
         return self.serializer.get_all()
 

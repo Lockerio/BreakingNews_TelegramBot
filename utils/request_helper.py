@@ -95,5 +95,14 @@ class RequestHelper:
         return newsService.get_newest_agency_news(agency_id)
 
     @staticmethod
+    def get_amount_of_read_news(user_id):
+        return expectedMoveService.get_one_by_user_id(user_id).amount_of_read_news
+
+    def get_news_desc(self, user):
+        amount_of_read_news = self.get_amount_of_read_news(user.id)
+        return newsService.get_special_news(user.source_agency_id,
+                                            amount_of_read_news)
+
+    @staticmethod
     def get_agencies():
         return agencyService.get_all()

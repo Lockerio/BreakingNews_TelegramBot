@@ -17,7 +17,15 @@ class ExpectedMoveService:
     def update(self, data):
         expected_move_id = data.get("user_id")
         expected_move = self.get_one_by_user_id(expected_move_id)
-        expected_move.is_waiting_n = data.get("is_waiting_n")
+
+        is_waiting_n = data.get("is_waiting_n")
+        if is_waiting_n:
+            expected_move.is_waiting_n = is_waiting_n
+
+        amount_of_read_news = data.get("amount_of_read_news")
+        if amount_of_read_news:
+            expected_move.amount_of_read_news = amount_of_read_news
+
         return self.serializer.update(expected_move)
 
     def create(self, data):

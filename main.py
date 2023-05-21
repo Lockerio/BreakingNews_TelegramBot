@@ -77,15 +77,26 @@ def get(message):
     if source_id:
         amount_news_to_show = user.news_amount_to_show
 
-        for news in range(amount_news_to_show):
-            news = requestHelper.get_news(source_id)
-            formatted_news = answerHelper.format_news(news)
-            bot.send_message(message.chat.id, formatted_news,
-                             parse_mode="html", disable_web_page_preview=True)
+        for news_counter in range(amount_news_to_show):
+            news = requestHelper.get_news_desc(user)
+
+            if news:
+                formatted_news = answerHelper.format_news(news)
+                answerHelper.update_user_amount_of_read_news(user.id,
+                                                             requestHelper.get_amount_of_read_news(user.id) + 1)
+                bot.send_message(message.chat.id, formatted_news,
+                                 parse_mode="html", disable_web_page_preview=True)
+            else:
+                answerHelper.update_user_amount_of_read_news(user.id, 0)
+                bot.send_message(message.chat.id, "К сожалению, вы просмотрели все новости этого агентства")
+                bot.send_message(message.chat.id, "Вы можете выбрать новое '/from_source' или "
+                                                  "подождать, пока они выпустят что-нибудь новенькое😇")
+                break
+
     else:
         bot.send_message(message.chat.id, "Вы не задали источник новостей")
         bot.send_message(message.chat.id,
-                         "Используйте '/from_source' для установки агентства по умолчанию😇")
+                         "Используйте '/from_source' для установки агентства по умолчанию😏")
 
 
 @bot.message_handler(commands=["default"])

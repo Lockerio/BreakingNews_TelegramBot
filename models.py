@@ -38,7 +38,14 @@ class User(Base):
     expected_moves = relationship("ExpectedMove", backref="users")
 
     def __repr__(self):
-        return f'{self.telegram_id}'
+        return f"""
+            {self.id}
+            {self.telegram_id}
+            {self.news_amount_to_show}
+            {self.news_agencies}
+            {self.source_agency_id}
+            {self.expected_moves}
+        """
 
 
 class Action(Base):

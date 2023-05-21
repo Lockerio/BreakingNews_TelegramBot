@@ -15,6 +15,14 @@ class AnswerHelper:
         expectedMoveService.update(mapping)
 
     @staticmethod
+    def update_user_amount_of_read_news(user_id, amount_of_read_news):
+        mapping = {
+            "user_id": user_id,
+            "amount_of_read_news": amount_of_read_news
+        }
+        expectedMoveService.update(mapping)
+
+    @staticmethod
     def format_news(news):
 
         message = f"""
