@@ -132,7 +132,7 @@ def get(message):
                 bot.send_message(message.chat.id, formatted_news,
                                  parse_mode="html", disable_web_page_preview=True)
             else:
-                answerHelper.update_user_amount_of_read_news(user.id, 1)
+                answerHelper.update_user_amount_of_read_news(user.id, 0)
                 bot.send_message(message.chat.id, "К сожалению, вы просмотрели все новости этого агентства")
                 bot.send_message(message.chat.id, "Вы можете выбрать новое '/default' или "
                                                   "подождать, пока они выпустят что-нибудь новенькое😇")
