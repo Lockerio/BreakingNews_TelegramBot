@@ -31,5 +31,4 @@ class BaikalDailyParser(ParserParent):
 
 
 if __name__ == '__main__':
-    baikalDailyParser = BaikalDailyParser(BAIKAL_DAILY_URL)
-    baikalDailyParser.save_index_html_to_file()
+    pass

@@ -33,8 +33,4 @@ class IrkRuParser(ParserParent):
 
 
 if __name__ == '__main__':
-    # irkRuParser = IrkRuParser(IRK_RU_URL)
-    # irkRuParser.save_index_html_to_file()
-    #
-    # print(irkRuParser.find_news("index.html"))
     pass

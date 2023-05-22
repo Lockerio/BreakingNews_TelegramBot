@@ -27,7 +27,7 @@ class ParserParent:
     @staticmethod
     def assert_save_news_to_db(news):
         is_there_newest_news = False
-        for item in news:
+        for item in news[::-1]:
             if newsService.assert_news_create(item):
                 is_there_newest_news = True
 

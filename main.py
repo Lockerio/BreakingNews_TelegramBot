@@ -14,6 +14,7 @@ requestHelper = RequestHelper()
 answerHelper = AnswerHelper()
 
 bot = telebot.TeleBot(BOT_TOKEN)
+print("Start bot")
 
 help_message = f"""
 /start - Запуск бота
@@ -32,6 +33,7 @@ help_message = f"""
 
 def background_task():
     while True:
+        print("Background start")
         is_there_newest_news = RequestHelper.background_request()
 
         all_chat_ids = requestHelper.get_sorted_chat_ids_by_user_favorites()
@@ -56,7 +58,7 @@ def background_task():
 
             for chat in all_chat_ids[CITY_N_ID]:
                 bot.send_message(chat, formatted_news, parse_mode="html", disable_web_page_preview=True)
-
+        print("Background sleep")
         sleep(3600)
 
 

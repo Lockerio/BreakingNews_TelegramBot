@@ -32,5 +32,4 @@ class CityNParser(ParserParent):
 
 
 if __name__ == '__main__':
-    cityNParser = CityNParser(CITY_N_URL)
-    cityNParser.save_index_html_to_file()
+    pass
