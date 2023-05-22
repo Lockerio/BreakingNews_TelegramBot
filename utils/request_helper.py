@@ -5,7 +5,8 @@ from fill_db import fill_db_news
 from parsing.BaikalDaily.baikal_daily import BaikalDailyParser
 from parsing.CityN.city_n import CityNParser
 from parsing.IrkRu.irk_ru import IrkRuParser
-from parsing.meta import BAIKAL_DAILY_URL, CITY_N_URL, AGENCIES_IDS, IRK_RU_URL
+from parsing.meta import BAIKAL_DAILY_URL, CITY_N_URL, AGENCIES_IDS, IRK_RU_URL, BAIKAL_DAILY_FILE_PATH, \
+    IRK_RU_FILE_PATH, CITY_N_FILE_PATH
 
 
 class RequestHelper:
@@ -70,34 +71,39 @@ class RequestHelper:
     def background_request():
         try:
             baikalDailyParser = BaikalDailyParser(BAIKAL_DAILY_URL)
-            baikalDailyParser.save_index_html_to_file()
+            baikalDailyParser.save_index_html_to_file(BAIKAL_DAILY_FILE_PATH, mode="w")
         except Exception as e:
             print(e)
 
         try:
             irkRuParser = IrkRuParser(IRK_RU_URL)
-            irkRuParser.save_index_html_to_file()
+            irkRuParser.save_index_html_to_file(IRK_RU_FILE_PATH, mode="wb")
         except Exception as e:
             print(e)
 
         try:
             cityNParser = CityNParser(CITY_N_URL)
-            cityNParser.save_index_html_to_file()
+            cityNParser.save_index_html_to_file(CITY_N_FILE_PATH, mode="w")
         except Exception as e:
             print(e)
 
-
         is_there_newest_news = fill_db_news()
-        print(is_there_newest_news)
 
         return is_there_newest_news
 
     @staticmethod
-    def get_sorted_chat_ids_with_sources_agency_id():
+    def get_sorted_chat_ids_by_user_favorites():
         all_chat_ids = {}
         for agency_id in AGENCIES_IDS:
-            chat_ids = userService.get_chat_ids_from_user_with_definite_source_agency(agency_id)
+            agencies_users = favoritesService.get_all_by_agency_id(agency_id)
+
+            chat_ids = [
+                userService.get_one(agency_user.user_id).chat_id
+                for agency_user in agencies_users
+            ]
+
             all_chat_ids[agency_id] = chat_ids
+
         return all_chat_ids
 
     @staticmethod

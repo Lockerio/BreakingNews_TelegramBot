@@ -9,12 +9,17 @@ class ParserParent:
         self.url = url
         self.headers = HEADERS
 
-    def save_index_html_to_file(self):
+    def save_index_html_to_file(self, file, mode):
         req = requests.get(self.url, headers=self.headers)
         src = req.text
 
-        with open("index.html", "wb") as file:
-            file.write(src.encode("utf-8"))
+        if mode == "wb":
+            with open(file, "wb") as file:
+                file.write(src.encode("utf-8"))
+
+        elif mode == "w":
+            with open(file, "w") as file:
+                file.write(src)
 
     def find_news(self, file):
         pass

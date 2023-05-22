@@ -30,33 +30,39 @@ help_message = f"""
 """
 
 
-# def background_task():
-#     while True:
-#         is_there_newest_news = RequestHelper.background_request()
-#
-#         all_chat_ids = requestHelper.get_sorted_chat_ids_with_sources_agency_id()
-#
-#         if is_there_newest_news[BAIKAL_DAILY_ID]:
-#             news = requestHelper.get_news(BAIKAL_DAILY_ID)
-#             for chat in all_chat_ids[BAIKAL_DAILY_ID]:
-#                 bot.send_message(chat, news, parse_mode="html")
-#
-#         if is_there_newest_news[IRK_RU_ID]:
-#             news = requestHelper.get_news(IRK_RU_ID)
-#             for chat in all_chat_ids[IRK_RU_ID]:
-#                 bot.send_message(chat, news, parse_mode="html")
-#
-#         if is_there_newest_news[CITY_N_ID]:
-#             news = requestHelper.get_news(CITY_N_ID)
-#             for chat in all_chat_ids[CITY_N_ID]:
-#                 bot.send_message(chat, news, parse_mode="html")
-#
-#         sleep(3600)
-#
-#
-# background_thread = threading.Thread(target=background_task)
-# background_thread.daemon = True
-# background_thread.start()
+def background_task():
+    while True:
+        is_there_newest_news = RequestHelper.background_request()
+
+        all_chat_ids = requestHelper.get_sorted_chat_ids_by_user_favorites()
+
+        if is_there_newest_news[BAIKAL_DAILY_ID]:
+            news = requestHelper.get_news(BAIKAL_DAILY_ID)
+            formatted_news = answerHelper.format_news(news)
+
+            for chat in all_chat_ids[BAIKAL_DAILY_ID]:
+                bot.send_message(chat, formatted_news, parse_mode="html", disable_web_page_preview=True)
+
+        if is_there_newest_news[IRK_RU_ID]:
+            news = requestHelper.get_news(IRK_RU_ID)
+            formatted_news = answerHelper.format_news(news)
+
+            for chat in all_chat_ids[IRK_RU_ID]:
+                bot.send_message(chat, formatted_news, parse_mode="html", disable_web_page_preview=True)
+
+        if is_there_newest_news[CITY_N_ID]:
+            news = requestHelper.get_news(CITY_N_ID)
+            formatted_news = answerHelper.format_news(news)
+
+            for chat in all_chat_ids[CITY_N_ID]:
+                bot.send_message(chat, formatted_news, parse_mode="html", disable_web_page_preview=True)
+
+        sleep(3600)
+
+
+background_thread = threading.Thread(target=background_task)
+background_thread.daemon = True
+background_thread.start()
 
 
 @bot.message_handler(commands=["start"])
@@ -68,19 +74,18 @@ def start(message):
 Я могу присылать Вам свежие новости от различных новостных агентств.
 Либо Вы сами можете просматривать уже опубликованные новости.
 
-Ладно, не буду томить Вас речами, которые написал мой разработчик🤓
 Просмотрите список команд для управления мной и начинайте читать новости)
 """
 
     bot.send_message(message.chat.id, start_message, parse_mode="html")
     bot.send_message(message.chat.id, help_message)
+    telegram_id = message.from_user.id
+    user_id = requestHelper.create_user(telegram_id, message.chat.id)
 
     # Баг
     # Если юзер после старта бота, еще раз его стартанет, то будет исключение SQLAlchemy,
     # при попытке сохранить его действия
     #
-    # telegram_id = message.from_user.id
-    # user_id = requestHelper.create_user(telegram_id, message.chat.id)
     # action = message.json
     # requestHelper.record_user_actions(user_id, action)  # Баг в этой строчке
 

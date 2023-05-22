@@ -14,9 +14,6 @@ class UserSerializer:
     def get_all(self):
         return self.session.query(User).all()
 
-    def get_user_by_source_agency_id(self, source_agency_id):
-        return self.session.query(User).filter_by(source_agency_id=source_agency_id).all()
-
     def create(self, data):
         user = User(**data)
         self.session.add(user)

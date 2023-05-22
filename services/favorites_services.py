@@ -14,6 +14,9 @@ class FavoritesService:
     def get_all(self):
         return self.serializer.get_all()
 
+    def get_all_by_agency_id(self, agency_id):
+        return self.serializer.get_all_by_agency_id(agency_id)
+
     def create(self, data):
         if self.get_one_by_user_and_agency(data["user_id"], data["agency_id"]):
             return

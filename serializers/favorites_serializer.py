@@ -17,6 +17,9 @@ class FavoritesSerializer:
     def get_all(self):
         return self.session.query(Favorites).all()
 
+    def get_all_by_agency_id(self, agency_id):
+        return self.session.query(Favorites).filter_by(agency_id=agency_id).all()
+
     def create(self, data):
         favorites = Favorites(**data)
         self.session.add(favorites)
