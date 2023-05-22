@@ -141,7 +141,7 @@ def default(message):
 
 
 @bot.message_handler(commands=["subscribe"])
-def default(message):
+def subscribe(message):
     user = requestHelper.get_user(message.from_user.id)
 
     agencies = requestHelper.get_agencies()
@@ -176,6 +176,37 @@ def default(message):
     requestHelper.record_user_actions(user.id, action)
 
 
+@bot.message_handler(commands=["unsubscribe"])
+def unsubscribe(message):
+    user = requestHelper.get_user(message.from_user.id)
+    favorites = user.favorites
+
+    if favorites:
+        agencies = []
+        for favorite in favorites:
+            agency_id = favorite.agency_id
+
+            agency = requestHelper.get_agency(agency_id)
+            agencies.append(agency)
+
+        mess = f'От какого агентства вы хотите отписаться?'
+
+        buttons = [
+            types.InlineKeyboardButton(f"{agency.name}", callback_data=f"unsubscribe,{agency.id}")
+            for agency in agencies
+        ]
+        markup = types.InlineKeyboardMarkup([buttons])
+
+        bot.send_message(message.chat.id, mess, parse_mode="html", disable_web_page_preview=True,
+                         reply_markup=markup)
+
+    else:
+        bot.send_message(message.chat.id, "Вы не подписаны ни на одно агентство")
+
+    action = message.json
+    requestHelper.record_user_actions(user.id, action)
+
+
 @bot.callback_query_handler(func=lambda call: True)
 def handle_button_click(call):
     button_data = call.data.split(",")
@@ -186,8 +217,6 @@ def handle_button_click(call):
 
     if sender == "default":
         requestHelper.save_source(call.from_user.id, number)
-        bot.answer_callback_query(call.id)
-
         answerHelper.update_user_amount_of_read_news(user.id, 1)
 
         bot.send_message(user.chat_id, "Источник по умолчанию установлен")
@@ -200,6 +229,13 @@ def handle_button_click(call):
         else:
             agency = requestHelper.get_agency(number)
             bot.send_message(user.chat_id, f"Вы подписались на {agency.name}")
+
+    elif sender == "unsubscribe":
+        agency = requestHelper.get_agency(number)
+        requestHelper.delete_favorite(user_id, number)
+        bot.send_message(user.chat_id, f"Вы отписались от {agency.name}")
+
+    bot.answer_callback_query(call.id)
 
 
 @bot.message_handler(content_types=["text"])

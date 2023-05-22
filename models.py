@@ -7,10 +7,15 @@ from database import engine
 
 Base = declarative_base()
 
-Favorites = Table('Favorites', Base.metadata,
-                  Column('agency_id', Integer(), ForeignKey('NewsAgencies.id')),
-                  Column('user_id', Integer(), ForeignKey('Users.id'))
-                  )
+
+class Favorites(Base):
+    __tablename__ = 'Favorites'
+    id = Column(Integer(), primary_key=True)
+    agency_id = Column(Integer(), ForeignKey('NewsAgencies.id'))
+    user_id = Column(Integer(), ForeignKey('Users.id'))
+
+    def __repr__(self):
+        return f'{self.user_id} {self.agency_id}'
 
 
 class NewsAgency(Base):
@@ -21,6 +26,7 @@ class NewsAgency(Base):
     beauty_url = Column(Text())
     source_agency = relationship("User", backref="news_agency")
     news = relationship("News", back_populates="news_agency")
+    favorites = relationship("Favorites", backref="news_agency")
 
     def __repr__(self):
         return f'{self.name}'
@@ -32,10 +38,10 @@ class User(Base):
     telegram_id = Column(Integer())
     chat_id = Column(Integer())
     news_amount_to_show = Column(Integer(), default=5)
-    news_agencies = relationship("NewsAgency", secondary=Favorites, backref="users")
     actions = relationship("Action", backref="users")
     source_agency_id = Column(Integer(), ForeignKey('NewsAgencies.id'))
     expected_moves = relationship("ExpectedMove", backref="users")
+    favorites = relationship("Favorites", backref="users")
 
     def __repr__(self):
         return f"""

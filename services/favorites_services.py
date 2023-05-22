@@ -19,5 +19,5 @@ class FavoritesService:
             return
         return self.serializer.create(data)
 
-    def delete(self, favorites_id):
-        self.serializer.delete(favorites_id)
+    def delete(self, user_id, agency_id):
+        self.serializer.delete(user_id, agency_id)

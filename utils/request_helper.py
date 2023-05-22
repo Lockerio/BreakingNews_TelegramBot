@@ -130,3 +130,7 @@ class RequestHelper:
         if favoritesService.create(mapping):
             return False
         return True
+
+    @staticmethod
+    def delete_favorite(user_id, agency_id):
+        favoritesService.delete(user_id, agency_id)

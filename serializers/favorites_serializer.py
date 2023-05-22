@@ -23,7 +23,7 @@ class FavoritesSerializer:
         self.session.commit()
         return favorites
 
-    def delete(self, favorites_id):
-        favorites = self.get_one(favorites_id)
-        self.session.delete(favorites)
+    def delete(self, user_id, agency_id):
+        favorite = self.get_one_by_user_and_agency(user_id, agency_id)
+        self.session.delete(favorite)
         self.session.commit()
