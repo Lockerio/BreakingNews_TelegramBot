@@ -10,7 +10,7 @@ Base = declarative_base()
 
 class Favorites(Base):
     __tablename__ = 'Favorites'
-    id = Column(Integer(), primary_key=True)
+    id = Column(Integer(), primary_key=True, nullable=False, autoincrement=True)
     agency_id = Column(Integer(), ForeignKey('NewsAgencies.id'))
     user_id = Column(Integer(), ForeignKey('Users.id'))
 
@@ -20,7 +20,7 @@ class Favorites(Base):
 
 class NewsAgency(Base):
     __tablename__ = 'NewsAgencies'
-    id = Column(Integer(), primary_key=True)
+    id = Column(Integer(), primary_key=True, nullable=False, autoincrement=True)
     name = Column(Text())
     description = Column(Text())
     beauty_url = Column(Text())
@@ -34,7 +34,7 @@ class NewsAgency(Base):
 
 class User(Base):
     __tablename__ = 'Users'
-    id = Column(Integer(), primary_key=True)
+    id = Column(Integer(), primary_key=True, nullable=False, autoincrement=True)
     telegram_id = Column(Integer())
     chat_id = Column(Integer())
     news_amount_to_show = Column(Integer(), default=5)
@@ -56,7 +56,7 @@ class User(Base):
 
 class Action(Base):
     __tablename__ = 'Actions'
-    id = Column(Integer(), primary_key=True)
+    id = Column(Integer(), primary_key=True, nullable=False, autoincrement=True)
     json_description = Column(JSON())
     user_id = Column(Integer(), ForeignKey('Users.id'))
 
@@ -66,7 +66,7 @@ class Action(Base):
 
 class ExpectedMove(Base):
     __tablename__ = 'ExpectedMove'
-    id = Column(Integer(), primary_key=True)
+    id = Column(Integer(), primary_key=True, nullable=False, autoincrement=True)
     is_waiting_n = Column(BOOLEAN(), default=False)
     amount_of_read_news = Column(Integer(), default=1)
     user_id = Column(Integer(), ForeignKey('Users.id'))
@@ -77,7 +77,7 @@ class ExpectedMove(Base):
 
 class News(Base):
     __tablename__ = 'News'
-    id = Column(Integer(), primary_key=True)
+    id = Column(Integer(), primary_key=True, nullable=False, autoincrement=True)
     title = Column(Text())
     text = Column(Text())
     url = Column(Text())

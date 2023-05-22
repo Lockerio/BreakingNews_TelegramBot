@@ -15,6 +15,20 @@ answerHelper = AnswerHelper()
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
+help_message = f"""
+/start - Запуск бота
+/help - Вывод всех возможных команд
+
+/default - Посмотреть или выбрать источник по умолчанию
+/get - Вывод новостей из источника по умолчанию
+/update_n - Обновить количество новостей для показа за раз (по умолчанию 5)
+
+/subscribe - Подписаться на агентство, вам будут приходить уведомления со свежими новостями от этого источника
+/unsubscribe - Отписаться от агентства, вам не будут приходить уведомления
+
+По предложениям, трудностям, багам, связанным со мной, писать ему🧐: @Lockerio
+"""
+
 
 # def background_task():
 #     while True:
@@ -47,11 +61,35 @@ bot = telebot.TeleBot(BOT_TOKEN)
 
 @bot.message_handler(commands=["start"])
 def start(message):
-    bot.send_message(message.chat.id, "<b>Привет</b>", parse_mode="html")
+    start_message = f"""
+<b>Привет!</b>
+Я новостной бот🤖
 
-    telegram_id = message.from_user.id
-    user_id = requestHelper.create_user(telegram_id, message.chat.id)
+Я могу присылать Вам свежие новости от различных новостных агентств.
+Либо Вы сами можете просматривать уже опубликованные новости.
 
+Ладно, не буду томить Вас речами, которые написал мой разработчик🤓
+Просмотрите список команд для управления мной и начинайте читать новости)
+"""
+
+    bot.send_message(message.chat.id, start_message, parse_mode="html")
+    bot.send_message(message.chat.id, help_message)
+
+    # Баг
+    # Если юзер после старта бота, еще раз его стартанет, то будет исключение SQLAlchemy,
+    # при попытке сохранить его действия
+    #
+    # telegram_id = message.from_user.id
+    # user_id = requestHelper.create_user(telegram_id, message.chat.id)
+    # action = message.json
+    # requestHelper.record_user_actions(user_id, action)  # Баг в этой строчке
+
+
+@bot.message_handler(commands=["help"])
+def update_n(message):
+    bot.send_message(message.chat.id, help_message)
+
+    user_id = requestHelper.get_user(message.from_user.id).id
     action = message.json
     requestHelper.record_user_actions(user_id, action)
 
@@ -89,14 +127,14 @@ def get(message):
             else:
                 answerHelper.update_user_amount_of_read_news(user.id, 1)
                 bot.send_message(message.chat.id, "К сожалению, вы просмотрели все новости этого агентства")
-                bot.send_message(message.chat.id, "Вы можете выбрать новое '/from_source' или "
+                bot.send_message(message.chat.id, "Вы можете выбрать новое '/default' или "
                                                   "подождать, пока они выпустят что-нибудь новенькое😇")
                 break
 
     else:
         bot.send_message(message.chat.id, "Вы не задали источник новостей")
         bot.send_message(message.chat.id,
-                         "Используйте '/from_source' для установки агентства по умолчанию😏")
+                         "Используйте '/default' для установки агентства по умолчанию😏")
 
 
 @bot.message_handler(commands=["default"])
